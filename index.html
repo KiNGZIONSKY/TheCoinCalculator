@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Value Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Coin Value Calculator</h1>
+
+    <p>Please input the number of sets of 4 coins and any remainders you have for each coin type:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Coin Type</th>
+                <th>Sets of 4</th>
+                <th>Remainder</th>
+            </tr>
+        </thead>
+        <tbody id="coinTable">
+            <!-- Rows will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <button onclick="calculateTotal()">Calculate Total Value</button>
+
+    <h2>Summary of Your Coins</h2>
+    <div id="summary">
+        <!-- Summary will be displayed here -->
+    </div>
+
+    <script>
+        const coinValues = {
+            "1p": 1,
+            "2p": 2,
+            "5p": 5,
+            "10p": 10,
+            "20p": 20,
+            "50p": 50,
+            "£1": 100,
+            "£2": 200
+        };
+
+        const coinTable = document.getElementById('coinTable');
+
+        // Create rows for each coin type
+        for (const coin in coinValues) {
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td>${coin}</td>
+                <td><input type="number" id="${coin}_sets" value="0" min="0"></td>
+                <td><input type="number" id="${coin}_remainder" value="0" min="0"></td>
+            `;
+
+            coinTable.appendChild(row);
+        }
+
+        function calculateTotal() {
+            let overallTotal = 0;
+            let summaryHTML = "<table><thead><tr><th>Coin Type</th><th>Total Coins</th><th>Total Value (p)</th></tr></thead><tbody>";
+
+            for (const coin in coinValues) {
+                const sets = parseInt(document.getElementById(`${coin}_sets`).value) || 0;
+                const remainder = parseInt(document.getElementById(`${coin}_remainder`).value) || 0;
+
+                const totalCoins = (sets * 4) + remainder;
+                const totalValue = totalCoins * coinValues[coin];
+                overallTotal += totalValue;
+
+                summaryHTML += `
+                    <tr>
+                        <td>${coin}</td>
+                        <td>${totalCoins}</td>
+                        <td>${totalValue}p</td>
+                    </tr>
+                `;
+            }
+
+            summaryHTML += `</tbody></table>`;
+            summaryHTML += `<p>The overall total value of your coins is: ${overallTotal}p</p>`;
+            summaryHTML += `<p>Which is £${(overallTotal / 100).toFixed(2)} in pounds.</p>`;
+
+            document.getElementById('summary').innerHTML = summaryHTML;
+        }
+    </script>
+
+</body>
+</html>
